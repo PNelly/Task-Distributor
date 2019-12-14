@@ -1,0 +1,142 @@
+/*
+
+	Sharihan Alnajjar & Patrick Doudy
+
+	ITT Learn & Code 2018
+
+	Task Distribution Assignment
+
+	High Level Overview of Proposed Classes
+	and Methods
+
+	This Document Accompanies Pictographic
+	Overviews of Component Workflows
+
+*/
+
+// Classes Shared Between Componenets
+// ==================================
+
+Class Task {
+	
+	int 		taskId
+	String 		taskName
+	String		taskExePath
+	enum 		taskState
+	byte[] 		programBytes
+	byte[] 		input
+	String		extension
+	String[] 	args
+}
+
+Class TaskResult {
+	
+	String 		errorCode
+	String 		errorMessage
+	String 		resultBuffer
+	int 		taskId
+	enum 		taskOutcome
+}
+
+Class TaskSerializer {
+	
+	byte[]	serialize(Task t)
+	Task 	deserialize(byte[] b)
+}
+
+// Task Distribution Client
+// ==================================
+
+Variables:
+
+String	hostName
+String 	userName
+int 	id
+Socket 	TdsSocket
+
+Methods:
+
+// Utility Methods //
+
+Socket connectToCoordinator(String taskCoordinatorIp, int clientPort)
+
+// High Level Methods //
+
+boolean submitTask(Task task)
+
+TaskResult queryResult(int taskId)
+
+// Mid Level Methods //
+
+byte[] getProgram(String programPath)
+
+byte[] getProgramInput(String inputPath)
+
+String getProgramExtension(String programPath)
+
+String sendTaskToCoordinator(Socket socket, Task task)
+
+// Task Distribution Worker Node
+// =================================
+
+Variables:
+
+String 	hostName
+int 	port
+int 	status
+Task 	currentTask
+int 	id
+Socket 	coordinatorSocket
+
+Methods:
+
+Socket connectToCoordinator(String taskCoordinatorIp, int workerPort)
+
+void waitForTask(Socket socket)
+
+String executeTask(Task task)
+
+void reportResult(String result)
+
+// Task Coordinator
+// =================================
+
+Class WorkerNode { /* Coordinator Representation */
+	
+	Socket socket
+	int status
+}
+
+void startup()
+	/* Open sockets and start listener threads, create DB connection */
+
+void waitForClientMessage()
+
+void waitForWorkerMessage()
+
+String checkTaskResult(int taskId)
+
+void sendResult(Socket clientSocket, String result)
+
+WorkerNode getAvailableNode()
+
+void assignTask(Task task, WorkerNode workerNode)
+
+void storeTaskResult(int taskId, String result)
+
+// TaskDatabase
+// ============
+
+Members:
+
+Connection dbConnection
+
+Methods:
+
+void taskDbAdd(Task task)
+
+Task taskDbRetrieve(int taskId)
+
+Task getNextTask()
+
+void taskDbUpdate(int taskId, Task task)

@@ -1,0 +1,11 @@
+{
+	"dBConnectionString" 	: "jdbc:mysql://localhost:3306/tds?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT",
+	"dBConnectionUser"		: "root",
+	"dBConnectionPassword"	: "",
+	"protocolFormat" 		: "json",
+	"protocolVersion" 		: "1.0",
+	"coordinatorPort" 		: "9090",
+	"coordinatorIp"			: "127.0.0.1",
+	"coordinatorTaskDir" 	: "TaskProgramBytes",
+	"nodePort" 				: "9091"
+}

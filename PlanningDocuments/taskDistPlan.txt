@@ -1,0 +1,157 @@
+/*
+
+	Task Distribution System Plan
+	Patrick Doudy Jul 1 2018
+
+*/
+
+// Client Class
+// ============
+
+	// Methods //
+
+	submitTask()
+
+		- locate and read program into memory
+		- open connection to coordinator
+		- submit program
+		- await then print response
+
+		// supporting methods //
+
+		locateAndRead()
+			- get program as byte array
+
+		submitProgram()
+			- open connection to coordinator
+			- write header and program data
+			-  await then print response
+
+	queryStatus()
+
+		- open connection to coordinator
+		- submit task id query
+		- await then print response
+
+	queryResult()
+
+		- open connection to coordinator
+		- submit task id query
+		- await then print response
+
+	main()
+
+		- run appropriate of above methods
+			according to arguments
+
+// WorkerNode Class
+// ================
+
+	// Methods //
+
+	connectAndListen()
+
+		- open connection to coordinator
+		- run updateStatus() to indicate available
+		- await tasks from coordinator
+
+	executeTask()
+
+		- use appropriate system call to launch
+			program and direct output to a file
+
+	updateStatus()
+
+		- send message to coordinator indicating
+			availability
+
+	submitResult()
+
+		- submit output data from executed task
+			back to coordinator
+		- delete task program and output file
+
+	main()
+
+		- begin connect and listen cycle
+
+// Task Coordinator Class
+// ======================
+
+	// Members //
+
+	collection of worker nodes
+
+	// Methods //
+
+	coordinatorListen()
+
+		- open seperate sockets for client connections
+			and worker node connections
+
+		- await connections from clients and
+			task nodes and launch a handler thread 
+			for each new arrival
+
+	enqueTask()
+
+		- insert task into database with status "queued"
+		- run assignTask() method
+
+	assignTask()
+
+		- find a free worker node if one is available
+		- retrieve task from database with minimum id 
+			having status "queued"
+		- if a task is present, send task to the worker
+		- update workers status to 'busy'
+		- update task status to "in progress"
+
+	getTaskStatus()
+
+		- retrieve status from database for a given
+			task id
+
+	setTaskResult()
+
+		- update DB record of a task with result received
+			from a worker node
+
+	getTaskResult()
+
+		- retrieve task output from database for a
+			given task id
+
+
+	// Sub Classes //
+	// =========== //
+
+	// ClientHandler extends thread
+	// ============================
+
+		// Methods //
+
+		clientListen()
+
+			- loop continuously to read client message
+			- If a task is submitted, run enqueTask()
+			- if a queryStatus message is received, run
+				getTaskStatus() and write result to client
+			- if a queryResult message is received, run
+				getTaskResult() and write result to client
+
+	// NodeHandler extends thread
+	// ==========================
+
+		// Members //
+
+		status
+
+		// Methods //
+
+		nodeListen()
+
+			- loop continuously reading node data
+			- if a status update is received for 'available'
+				run assignTask()
+			- if a task result is received run setTaskResult()
